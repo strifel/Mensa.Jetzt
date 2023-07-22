@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-	if (strpos($_POST['name'].$_POST['time'], '"') != false) die("Bad data");
-	if (strpos($_POST['name'].$_POST['time'], ',') != false) die("Bad data");
+	if (preg_match("/^[a-zA-Z0-9äöüß]{1,20}$/s", $_POST['name']) != 1) die("Bad name data");
+	if (preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1) die("Bad time data");
 	$fh = fopen("../data/".date("Y-m-d").".db", "a") or die("Unable to open database!");	
 	$txt = $_POST['name'].','.$_POST['time'];
 	fwrite($fh, $txt."\n");
@@ -52,11 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <div class="card-body">
         <h5 class="card-title">Du bist heute auch in der Mensa?</h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" placeholder="Gebe hier deinen Namen ein" <?php if (isset($_COOKIE['save-name'])) { ?> value="<?php echo $_COOKIE['save-name'] ?>" readonly <?php } ?> /><br>
-      <select class="form-control" name="time" value="12:00 Uhr">
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß]{1,20}$" placeholder="Gebe hier deinen Namen ein" <?php if (isset($_COOKIE['save-name'])) { ?> value="<?php echo $_COOKIE['save-name'] ?>" readonly <?php } ?> /><br>
+      <select class="form-control" name="time">
         <option value="11:30 Uhr">11:30 Uhr</option>
         <option value="11:45 Uhr">11:45 Uhr</option>
-        <option value="12:00 Uhr">12:00 Uhr</option>
+        <option value="12:00 Uhr" selected="selected">12:00 Uhr</option>
         <option value="12:15 Uhr">12:15 Uhr</option>
         <option value="12:30 Uhr">12:30 Uhr</option>
         <option value="12:45 Uhr">12:45 Uhr</option>
