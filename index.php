@@ -1,8 +1,24 @@
 <?php
+if (date("N") == 6) {
+  $filename = "../data/".date("Y-m-d", time() + 60*60*24*2).".db";
+  $humanReadableDay = "Montag";
+} else if (date("N") == 7) {
+  $filename = "../data/".date("Y-m-d", time() + 60*60*24).".db";
+  $humanReadableDay = "Montag";
+} else if (date("N") == 5 && date("H") >= 15) {
+  $filename = "../data/".date("Y-m-d", time() + 60*60*24*3).".db";
+  $humanReadableDay = "Montag";
+} else if (date("H") >= 15) {
+  $filename = "../data/".date("Y-m-d", time() + 60*60*24).".db";
+  $humanReadableDay = "Morgen";
+} else {
+  $filename = "../data/".date("Y-m-d").".db";
+  $humanReadableDay = "Heute";
+}
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	if (preg_match("/^[a-zA-Z0-9äöüß]{1,20}$/s", $_POST['name']) != 1) die("Bad name data");
 	if (preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1) die("Bad time data");
-	$fh = fopen("../data/".date("Y-m-d").".db", "a") or die("Unable to open database!");	
+	$fh = fopen($filename, "a") or die("Unable to open database!");	
 	$txt = $_POST['name'].','.$_POST['time'];
 	fwrite($fh, $txt."\n");
 	fclose($fh);
@@ -26,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <span class="navbar-brand mb-0 h1" style="padding-left: 1rem">Mensa.JETZT</span>
     </nav>
   <div id="content" style="padding: 2rem;">
-    <h2>Heute in der Mensa</h2><br>
+    <h2><?php echo $humanReadableDay; ?> in der Mensa</h2><br>
     <table class="table">
       <thead>
         <tr>
@@ -35,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	</tr>
       </thead>
       <?php       
-       $fh = fopen('../data/'.date("Y-m-d").'.db','r');
+       $fh = fopen($filename,'r');
        while ($line = fgets($fh)) {
          $data = explode(",", $line);
       ?>
