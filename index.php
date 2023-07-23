@@ -21,8 +21,13 @@ if (date("N") == 6) {
   $humanReadableDay = "Heute";
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-	if (preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1) die("Bad name data");
-	if (preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1) die("Bad time data");
+	if (
+   preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1 ||
+   preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1
+  ) {
+    http_response_code(400);
+    die("Bad data");
+  }
 	$fh = fopen($filename, "a") or die("Unable to open database!");
 
   // Logged out users shall have id -1

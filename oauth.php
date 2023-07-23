@@ -18,7 +18,10 @@ $options = [
 
 $context = stream_context_create($options);
 $result = file_get_contents($oauth_token_url, false, $context);
-if ($result === false) die("auth failed");
+if ($result === false) {
+    http_response_code(401);
+    die("auth failed");
+}
 $access_token = json_decode($result)->{'access_token'};
 
 $options = [
@@ -30,7 +33,10 @@ $options = [
 
 $context = stream_context_create($options);
 $result = file_get_contents($oauth_userinfo_url, false, $context);
-if ($result === false) die("request failed");
+if ($result === false) {
+    http_response_code(500);
+    die("request failed");
+};
 $data = json_decode($result, true);
 session_start();
 $_SESSION['user_id'] = $data['sub'];
