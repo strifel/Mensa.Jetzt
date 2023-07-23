@@ -1,0 +1,7 @@
+<?php
+$oauth_client_id = "";
+$oauth_client_secret = "";
+$oauth_token_url = "";
+$oauth_redirect_url = "";
+$oauth_request_url = "?client_id=".$oauth_client_id."&redirect_uri=".$oauth_redirect_url."&response_type=code&scope=openid+profile";
+$oauth_userinfo_url = "";
