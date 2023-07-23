@@ -21,7 +21,7 @@ if (date("N") == 6) {
   $humanReadableDay = "Heute";
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-	if (preg_match("/^[a-zA-Z0-9äöüß]{1,20}$/s", $_POST['name']) != 1) die("Bad name data");
+	if (preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1) die("Bad name data");
 	if (preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1) die("Bad time data");
 	$fh = fopen($filename, "a") or die("Unable to open database!");
 
@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <div class="card-body">
         <h5 class="card-title">Du bist heute auch in der Mensa?</h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
       <select class="form-control" name="time">
         <option value="11:30 Uhr">11:30 Uhr</option>
         <option value="11:45 Uhr">11:45 Uhr</option>
