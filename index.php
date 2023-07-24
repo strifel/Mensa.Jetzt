@@ -1,4 +1,6 @@
 <?php
+include_once 'db.php';
+
 if (isset($_COOKIE['PHPSESSID'])) {
   // Only start session (would set cookie) if we have consent by
   // user by logging in
@@ -28,7 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     http_response_code(400);
     die("Bad data");
   }
-	$fh = fopen($filename, "a") or die("Unable to open database!");
+
+  if (isset($_POST['saveName']) && $_POST['saveName'] == 'on') {
+		setcookie('save-name', $_POST['name'], time()+60*60*24*31*12);
+	}
 
   // Logged out users shall have id -1
   if (isset($_SESSION['user_id'])) {
@@ -37,13 +42,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $user_id = "-1";
   }
 
-	$txt = $_POST['name'].','.$_POST['time'].','.$user_id;
-	fwrite($fh, $txt."\n");
-	fclose($fh);
-	if ($_POST['saveName'] == 'on') {
-		setcookie('save-name', $_POST['name'], time()+60*60*24*31*12);
-	}
-	header("Location: /", true, 303);
+  $txt = $_POST['name'].','.$_POST['time'].','.$user_id;
+
+  if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($filename)) == FALSE) {
+    appendLine($filename, $txt);
+  } else {
+    replaceLine($filename, $old, $txt);
+  }
+
+  header("Location: /", true, 303);
 	exit();
 }
 ?>
