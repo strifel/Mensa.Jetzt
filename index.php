@@ -84,8 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </thead>
       <?php       
        $fh = fopen($filename,'r');
+       $readMyself = FALSE;
        while ($line = fgets($fh)) {
          $data = explode(",", $line);
+         if (
+          isset($_SESSION['user_id']) && 
+          str_replace("\n", "", explode(",", $line)[2]) == $_SESSION['user_id']
+        ) $readMyself = $data;
       ?>
       <tr>
         <td><?php echo $data[0]; ?></td>
@@ -98,9 +103,15 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </table><br>
     <div class="card" style="max-width: 30rem;">
       <div class="card-body">
-        <h5 class="card-title">Du bist heute auch in der Mensa?</h5>
+        <h5 class="card-title">
+          <?php if ($readMyself == FALSE) { ?>
+            Du bist heute auch in der Mensa?
+          <?php } else { ?>
+            Du bist doch wann anders in der Mensa?
+          <?php } ?>
+        </h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself[0]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
       <select class="form-control" name="time">
         <option value="11:30 Uhr">11:30 Uhr</option>
         <option value="11:45 Uhr">11:45 Uhr</option>
