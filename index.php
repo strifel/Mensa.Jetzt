@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <div class="card-body">
         <h5 class="card-title">
           <?php if ($readMyself == FALSE) { ?>
-            Du bist heute auch in der Mensa?
+            Du bist <?php echo $humanReadableDay; ?> auch in der Mensa?
           <?php } else { ?>
             Du bist doch wann anders in der Mensa?
           <?php } ?>
