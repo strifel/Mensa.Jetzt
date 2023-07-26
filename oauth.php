@@ -38,8 +38,9 @@ if ($result === false) {
     die("request failed");
 };
 $data = json_decode($result, true);
-session_start();
-$_SESSION['user_id'] = $data['sub'];
+session_start([
+  'cookie_lifetime' => 60*60*24*365
+]);$_SESSION['user_id'] = $data['sub'];
 if (isset($data['name'])) {
     $_SESSION['name'] = $data['name'];
 }

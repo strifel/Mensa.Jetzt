@@ -4,7 +4,10 @@ include_once 'db.php';
 if (isset($_COOKIE['PHPSESSID'])) {
   // Only start session (would set cookie) if we have consent by
   // user by logging in
-  session_start();
+  session_start([
+    'cookie_lifetime' => 60*60*24*365,
+    'read_and_close' => true
+  ]);
 }
 if (date("N") == 6) {
   $filename = "../data/".date("Y-m-d", time() + 60*60*24*2).".db";
