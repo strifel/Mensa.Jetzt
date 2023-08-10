@@ -1,5 +1,6 @@
 <?php
 include_once 'db.php';
+include_once 'config.php';
 
 if (isset($_COOKIE['PHPSESSID'])) {
   // Only start session (would set cookie) if we have consent by
@@ -14,7 +15,8 @@ $dateConfig = getCurrentDayConfiguration();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	if (
    preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1 ||
-   preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1
+   preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1 ||
+   array_search($_POST['canteen'], $canteen_types) === FALSE
   ) {
     http_response_code(400);
     die("Bad data");
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $user_id = "-1";
   }
 
-  $txt = $_POST['name'].','.$_POST['time'].','.$user_id;
+  $txt = $_POST['name'].','.$_POST['time'].','.$user_id.','.$_POST['canteen'];
 
   if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($dateConfig['filename'])) == FALSE) {
     appendLine($dateConfig['filename'], $txt);
@@ -69,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <tr>
           <th>Wer?</td>
           <th>Wann?</td>
+          <th>Wo?</td>
 	</tr>
       </thead>
       <?php       
@@ -82,7 +85,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       ?>
       <tr>
         <td><?php echo $data['name']; ?></td>
-	<td><?php echo $data['time']; ?></td>
+	      <td><?php echo $data['time']; ?></td>
+        <td><?php echo $data['canteen']; ?></td>
       </tr>
       <?php	
         }
@@ -111,7 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <option value="13:30 Uhr">13:30 Uhr</option>
         <option value="13:45 Uhr">13:45 Uhr</option>
         <option value="14:00 Uhr">14:00 Uhr</option>
-	<option value="14:15 Uhr">14:15 Uhr</option>
+       	<option value="14:15 Uhr">14:15 Uhr</option>
+      </select><br>
+      <select class="form-control" name="canteen">
+        <?php foreach ($canteen_types as $canteen) {
+          if ($readMyself != FALSE && $readMyself['canteen'] == $canteen) {
+            echo('<option value="'.$canteen.'" selected="selected">'.$canteen.'</option>');
+          } else {
+            echo('<option value="'.$canteen.'">'.$canteen.'</option>');
+          }
+        } ?>
       </select><br>
       <?php
         if (!isset($_COOKIE['save-name'])) {

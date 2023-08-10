@@ -55,7 +55,8 @@ function getAttendance($filename, $get_confidential=FALSE) {
 
     $attendanceData = array(
       "name" => $data[0],
-      "time" => $data[1]
+      "time" => $data[1],
+      "canteen" => $data[3]
     );
 
     if ($get_confidential) {
