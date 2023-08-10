@@ -50,6 +50,8 @@ if ($_SERVER['HTTP_HOST'] == "mensa.jetzt") {
     $lang_also_there_sentence = "Du bist %word auch in der Mensa (2)?";
     $lang_change_time_sentence = "Du bist %word doch wann anders in der Mensa (2)?";
 }
+
+$oauth_request_url = "https://yourOauthDomain/oauth/authorize?client_id=".$oauth_client_id."&redirect_uri=".$oauth_redirect_url."&response_type=code&scope=openid+profile";
 ```
 ## WHY PHP???
 I wanted to just quickly write a small tool, mostly for shitposting with the domain name.
