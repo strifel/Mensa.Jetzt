@@ -7,4 +7,7 @@ $oauth_request_url = "?client_id=".$oauth_client_id."&redirect_uri=".$oauth_redi
 $oauth_userinfo_url = "";
 
 // There can not be any , in canteen names
-$canteen_types = ["Mensa"]
+$canteen_types = ["Mensa"];
+
+$times = ["12:00 Uhr"];
+$default_time = $times[0];

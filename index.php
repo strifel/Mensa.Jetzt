@@ -15,7 +15,7 @@ $dateConfig = getCurrentDayConfiguration();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	if (
    preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1 ||
-   preg_match("/^1[1-4]:[0-5][0-9] Uhr$/s", $_POST['time']) != 1 ||
+   array_search($_POST['time'], $times) === FALSE ||
    array_search($_POST['canteen'], $canteen_types) === FALSE
   ) {
     http_response_code(400);
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <thead>
         <tr>
           <th>Wer?</td>
-          <th>Wann?</td>
+          <?php if (sizeof($times) > 1) echo '<td>Wann?</td>'; ?>
           <?php if (sizeof($canteen_types) > 1) echo '<td>Wo?</td>'; ?>
 	</tr>
       </thead>
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       ?>
       <tr>
         <td><?php echo $data['name']; ?></td>
-	      <td><?php echo $data['time']; ?></td>
+        <?php if (sizeof($times) > 1) echo '<td>'.$data['time'].'</td>'; ?>
         <?php if (sizeof($canteen_types) > 1) echo '<td>'.$data['canteen'].'</td>'; ?>
       </tr>
       <?php	
@@ -103,19 +103,17 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </h5>
       <form method="POST">
       <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
-      <select class="form-control" name="time">
-        <option value="11:30 Uhr">11:30 Uhr</option>
-        <option value="11:45 Uhr">11:45 Uhr</option>
-        <option value="12:00 Uhr" selected="selected">12:00 Uhr</option>
-        <option value="12:15 Uhr">12:15 Uhr</option>
-        <option value="12:30 Uhr">12:30 Uhr</option>
-        <option value="12:45 Uhr">12:45 Uhr</option>
-        <option value="13:00 Uhr">13:00 Uhr</option>
-        <option value="13:15 Uhr">13:15 Uhr</option>
-        <option value="13:30 Uhr">13:30 Uhr</option>
-        <option value="13:45 Uhr">13:45 Uhr</option>
-        <option value="14:00 Uhr">14:00 Uhr</option>
-       	<option value="14:15 Uhr">14:15 Uhr</option>
+      <select class="form-control" name="time" <?php if (sizeof($times) <= 1) echo 'style="display:none"'; ?>>
+      <?php foreach ($times as $time) {
+          if (
+            ($readMyself != FALSE && $readMyself['time'] == $time) ||
+            ($readMyself == FALSE && $time == $default_time)
+          ) {
+            echo('<option value="'.$time.'" selected="selected">'.$time.'</option>');
+          } else {
+            echo('<option value="'.$time.'">'.$time.'</option>');
+          }
+        } ?>
       </select><br>
       <select class="form-control" name="canteen" <?php if (sizeof($canteen_types) <= 1) echo 'style="display:none"'; ?>>
         <?php foreach ($canteen_types as $canteen) {
