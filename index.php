@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <tr>
           <th>Wer?</td>
           <th>Wann?</td>
-          <th>Wo?</td>
+          <?php if (sizeof($canteen_types) > 1) echo '<td>Wo?</td>'; ?>
 	</tr>
       </thead>
       <?php       
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       <tr>
         <td><?php echo $data['name']; ?></td>
 	      <td><?php echo $data['time']; ?></td>
-        <td><?php echo $data['canteen']; ?></td>
+        <?php if (sizeof($canteen_types) > 1) echo '<td>'.$data['canteen'].'</td>'; ?>
       </tr>
       <?php	
         }
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <option value="14:00 Uhr">14:00 Uhr</option>
        	<option value="14:15 Uhr">14:15 Uhr</option>
       </select><br>
-      <select class="form-control" name="canteen">
+      <select class="form-control" name="canteen" <?php if (sizeof($canteen_types) <= 1) echo 'style="display:none"'; ?>>
         <?php foreach ($canteen_types as $canteen) {
           if ($readMyself != FALSE && $readMyself['canteen'] == $canteen) {
             echo('<option value="'.$canteen.'" selected="selected">'.$canteen.'</option>');
