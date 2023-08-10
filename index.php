@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
 <html>
   <head>
-    <title>Mensa.JETZT</title>
+    <title><?php echo $pageTitle; ?></title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   </head>
   <body>
     <nav class="navbar navbar-light bg-light justify-content-between" style="padding: 0">
-      <span class="navbar-brand mb-0 h1" style="padding-left: 1rem">Mensa.JETZT</span>
+      <span class="navbar-brand mb-0 h1" style="padding-left: 1rem"><?php echo $pageTitle; ?></span>
       <form class="form-inline">
         <?php if (!isset($_SESSION['user_id'])) { ?>
           <a href="/oauth.php" class="btn btn-outline-success my-2 my-sm-0" style="margin-right: 1rem;margin-top: 10px !important">Login</a>
@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </form>
     </nav>
   <div id="content" style="padding: 2rem;">
-    <h2><?php echo $dateConfig['humanReadableDay']; ?> in der Mensa</h2><br>
+    <h2><?php echo $dateConfig['humanReadableDay']." ".$lang_overview_sentence; ?></h2><br>
     <table class="table">
       <thead>
         <tr>
@@ -95,11 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <div class="card" style="max-width: 30rem;">
       <div class="card-body">
         <h5 class="card-title">
-          <?php if ($readMyself == FALSE) { ?>
-            Du bist <?php echo $dateConfig['humanReadableDay']; ?> auch in der Mensa?
-          <?php } else { ?>
-            Du bist doch wann anders in der Mensa?
-          <?php } ?>
+          <?php if ($readMyself == FALSE) {
+            echo str_replace("%word", $dateConfig['humanReadableDay'], $lang_also_there_sentence);
+          } else {
+            echo str_replace("%word", $dateConfig['humanReadableDay'], $lang_change_time_sentence);
+          } ?>
         </h5>
       <form method="POST">
       <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>

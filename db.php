@@ -1,23 +1,29 @@
 <?php
 
+include_once 'config.php';
+
 function getCurrentDayConfiguration() {
+  global $dataDirectory;
+  global $endHour;
+
   if (date("N") == 6) {
     $date = date("Y-m-d", time() + 60 * 60 * 24 * 2);
     $humanReadableDay = "Montag";
   } else if (date("N") == 7) {
     $date = date("Y-m-d", time() + 60 * 60 * 24);
     $humanReadableDay = "Montag";
-  } else if (date("N") == 5 && date("H") >= 15) {
+  } else if (date("N") == 5 && date("H") >= $endHour) {
     $date = date("Y-m-d", time() + 60 * 60 * 24 * 3);
     $humanReadableDay = "Montag";
-  } else if (date("H") >= 15) {
+  } else if (date("H") >= $endHour) {
     $date = date("Y-m-d", time() + 60 * 60 * 24);
     $humanReadableDay = "Morgen";
   } else {
     $date = date("Y-m-d");
     $humanReadableDay = "Heute";
   }
-  $filename = "../data/" . $date . ".db";
+
+  $filename = $dataDirectory . "/" . $date . ".db";
   return [
     'filename' => $filename,
     'date' => $date,

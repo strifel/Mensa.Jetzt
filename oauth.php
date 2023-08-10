@@ -4,7 +4,7 @@ if (!isset($_GET['code'])) {
     header("Location: ".$oauth_request_url, true, 303);
     exit();
 }
-
+var_dump($oauth_redirect_url);
 $code = $_GET['code'];
 $parameters = 'client_id='.$oauth_client_id.'&code='.$code.'&grant_type=authorization_code&redirect_uri='.$oauth_redirect_url.'&client_secret='.$oauth_client_secret;
 
