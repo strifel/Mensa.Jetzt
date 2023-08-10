@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
   if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($dateConfig['filename'])) == FALSE) {
     appendLine($dateConfig['filename'], $txt);
   } else {
-    replaceLine($dateConfig['filename'], $old, $txt);
+    replaceLine($dateConfig['filename'], $old, $txt."\n");
   }
 
   header("Location: /", true, 303);
