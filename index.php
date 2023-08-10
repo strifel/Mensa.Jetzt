@@ -9,22 +9,8 @@ if (isset($_COOKIE['PHPSESSID'])) {
     'read_and_close' => true
   ]);
 }
-if (date("N") == 6) {
-  $filename = "../data/".date("Y-m-d", time() + 60*60*24*2).".db";
-  $humanReadableDay = "Montag";
-} else if (date("N") == 7) {
-  $filename = "../data/".date("Y-m-d", time() + 60*60*24).".db";
-  $humanReadableDay = "Montag";
-} else if (date("N") == 5 && date("H") >= 15) {
-  $filename = "../data/".date("Y-m-d", time() + 60*60*24*3).".db";
-  $humanReadableDay = "Montag";
-} else if (date("H") >= 15) {
-  $filename = "../data/".date("Y-m-d", time() + 60*60*24).".db";
-  $humanReadableDay = "Morgen";
-} else {
-  $filename = "../data/".date("Y-m-d").".db";
-  $humanReadableDay = "Heute";
-}
+$dateConfig = getCurrentDayConfiguration();
+
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	if (
    preg_match("/^[a-zA-Z0-9äöüß ]{1,20}$/s", $_POST['name']) != 1 ||
@@ -47,10 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
   $txt = $_POST['name'].','.$_POST['time'].','.$user_id;
 
-  if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($filename)) == FALSE) {
-    appendLine($filename, $txt);
+  if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($dateConfig['filename'])) == FALSE) {
+    appendLine($dateConfig['filename'], $txt);
   } else {
-    replaceLine($filename, $old, $txt);
+    replaceLine($dateConfig['filename'], $old, $txt);
   }
 
   header("Location: /", true, 303);
@@ -77,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
       </form>
     </nav>
   <div id="content" style="padding: 2rem;">
-    <h2><?php echo $humanReadableDay; ?> in der Mensa</h2><br>
+    <h2><?php echo $dateConfig['humanReadableDay']; ?> in der Mensa</h2><br>
     <table class="table">
       <thead>
         <tr>
@@ -86,35 +72,33 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	</tr>
       </thead>
       <?php       
-       $fh = fopen($filename,'r');
+       $attendance = getAttendance($dateConfig['filename'], TRUE);
        $readMyself = FALSE;
-       while ($line = fgets($fh)) {
-         $data = explode(",", $line);
+       foreach ($attendance as $data) {
          if (
           isset($_SESSION['user_id']) && 
-          str_replace("\n", "", explode(",", $line)[2]) == $_SESSION['user_id']
-        ) $readMyself = $data;
+          $data['user_id'] == $_SESSION['user_id']
+         ) $readMyself = $data;
       ?>
       <tr>
-        <td><?php echo $data[0]; ?></td>
-	<td><?php echo $data[1]; ?></td>
+        <td><?php echo $data['name']; ?></td>
+	<td><?php echo $data['time']; ?></td>
       </tr>
       <?php	
         }
-        fclose($fh);
       ?>
     </table><br>
     <div class="card" style="max-width: 30rem;">
       <div class="card-body">
         <h5 class="card-title">
           <?php if ($readMyself == FALSE) { ?>
-            Du bist <?php echo $humanReadableDay; ?> auch in der Mensa?
+            Du bist <?php echo $dateConfig['humanReadableDay']; ?> auch in der Mensa?
           <?php } else { ?>
             Du bist doch wann anders in der Mensa?
           <?php } ?>
         </h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself[0]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
       <select class="form-control" name="time">
         <option value="11:30 Uhr">11:30 Uhr</option>
         <option value="11:45 Uhr">11:45 Uhr</option>
