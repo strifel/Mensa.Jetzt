@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
          ) $readMyself = $data;
       ?>
       <tr>
-        <td><?php echo $data['name']; ?></td>
+        <td style="color: <?php echo $data['color']; ?>;"><?php echo $data['name']; ?></td>
         <?php if (sizeof($times) > 1) echo '<td>'.$data['time'].'</td>'; ?>
         <?php if (sizeof($canteen_types) > 1) echo '<td>'.$data['canteen'].'</td>'; ?>
       </tr>

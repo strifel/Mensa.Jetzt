@@ -15,3 +15,4 @@ $dataDirectory = "../data";
 $pageTitle = strtoupper($_SERVER['SERVER_NAME']);
 $lang_overview_sentence = "in der Mensa";
 $lang_also_there_sentence = "Du bist %word auch in der Mensa?";
+$verified_colors = [];

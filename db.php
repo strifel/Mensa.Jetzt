@@ -53,6 +53,8 @@ function appendLine($filename, $line) {
 }
 
 function getAttendance($filename, $get_confidential=FALSE) {
+  global $verified_colors;
+
   $attendance = [];
 
   $fh = fopen($filename, 'r');
@@ -62,7 +64,8 @@ function getAttendance($filename, $get_confidential=FALSE) {
     $attendanceData = array(
       "name" => $data[0],
       "time" => $data[1],
-      "canteen" => $data[3]
+      "canteen" => $data[3],
+      "color" => ($data[2] != "" && array_key_exists($data[2], $verified_colors)) ? $verified_colors[$data[2]] : "#000000"
     );
 
     if ($get_confidential) {
