@@ -33,6 +33,10 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $user_id = "-1";
   }
 
+  if (isset($_POST['verifiedName']) && $_POST['verifiedName'] == 'on' && isset($_SESSION['username'])) {
+		$_POST['name'] = $_POST['name']." (@".$_SESSION['username'].")";
+	}
+
   $txt = $_POST['name'].','.$_POST['time'].','.$user_id.','.$_POST['canteen'];
 
   if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($dateConfig['filename'])) == FALSE) {
@@ -102,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
           } ?>
         </h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo substr($readMyself["name"], 0, strpos($readMyself["name"], "(") != FALSE ? strpos($readMyself["name"], "(") - 1 : strlen($readMyself["name"])); else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
       <select class="form-control" name="time" <?php if (sizeof($times) <= 1) echo 'style="display:none"'; ?>>
       <?php foreach ($times as $time) {
           if (
@@ -130,6 +134,16 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         <div class="form-check">
           <input type="checkbox" name="saveName" class="form-check-input" id="saveNameCheck">
           <label class="form-check-label" for="saveNameCheck">Namen speichern (speichert Cookie)</label>
+        </div><br>
+      <?php
+       }
+      ?>
+      <?php
+        if (isset($_SESSION['username'])) {
+      ?>
+        <div class="form-check">
+          <input type="checkbox" name="verifiedName" checked class="form-check-input" id="verifiedNameCheck">
+          <label class="form-check-label" for="verifiedNameCheck">Verifizierten Username zeigen</label>
         </div><br>
       <?php
        }

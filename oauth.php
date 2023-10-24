@@ -40,7 +40,9 @@ if ($result === false) {
 $data = json_decode($result, true);
 session_start([
   'cookie_lifetime' => 60*60*24*365
-]);$_SESSION['user_id'] = $data['sub'];
+]);
+$_SESSION['username'] = $data['preferred_username'];
+$_SESSION['user_id'] = $data['sub'];
 if (isset($data['name'])) {
     $_SESSION['name'] = $data['name'];
 }
