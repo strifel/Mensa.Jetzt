@@ -63,6 +63,7 @@ function getAttendance($filename, $get_confidential=FALSE) {
 
     $attendanceData = array(
       "name" => $data[0],
+      "name_modifiers" => $data[4],
       "time" => $data[1],
       "canteen" => $data[3],
       "color" => ($data[2] != "" && array_key_exists($data[2], $verified_colors)) ? $verified_colors[$data[2]] : "#000000"
