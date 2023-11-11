@@ -1,10 +1,11 @@
 <?php
 require_once 'config.php';
+require_once 'auth.php';
+
 if (!isset($_GET['code'])) {
     header("Location: ".$oauth_request_url, true, 303);
     exit();
 }
-var_dump($oauth_redirect_url);
 $code = $_GET['code'];
 $parameters = 'client_id='.$oauth_client_id.'&code='.$code.'&grant_type=authorization_code&redirect_uri='.$oauth_redirect_url.'&client_secret='.$oauth_client_secret;
 
@@ -38,13 +39,7 @@ if ($result === false) {
     die("request failed");
 };
 $data = json_decode($result, true);
-session_start([
-  'cookie_lifetime' => 60*60*24*365
-]);
-$_SESSION['username'] = $data['preferred_username'];
-$_SESSION['user_id'] = $data['sub'];
-if (isset($data['name'])) {
-    $_SESSION['name'] = $data['name'];
-}
+$token = create_token($data['sub'], $data['preferred_username'], $data['name']);
+setcookie("auth", $token, time() + 60*60*24*31,"/");
 header("Location: /");
 exit();

@@ -1,14 +1,12 @@
 <?php
-include_once 'db.php';
-include_once 'config.php';
+require_once 'db.php';
+require_once 'config.php';
+require_once 'auth.php';
 
-if (isset($_COOKIE['PHPSESSID'])) {
-  // Only start session (would set cookie) if we have consent by
-  // user by logging in
-  session_start([
-    'cookie_lifetime' => 60*60*24*365,
-    'read_and_close' => true
-  ]);
+if (isset($_COOKIE['auth'])) {
+  $login = get_token_value($_COOKIE['auth']); 
+} else {
+  $login = FALSE;
 }
 $dateConfig = getCurrentDayConfiguration();
 
@@ -27,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 	}
 
   // Logged out users shall have id -1
-  if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
+  if ($login != FALSE) {
+    $user_id = $login['user_id'];
   } else {
     $user_id = "-1";
   }
@@ -39,13 +37,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $name_modifiers = $verified_symbols[$user_id];
   }
 
-  if (isset($_POST['verifiedName']) && $_POST['verifiedName'] == 'on' && isset($_SESSION['username'])) {
-		$name_modifiers = $name_modifiers." (@".$_SESSION['username'].")";
+  if (isset($_POST['verifiedName']) && $_POST['verifiedName'] == 'on' && isset($login['username'])) {
+		$name_modifiers = $name_modifiers." (@".$login['username'].")";
 	}
 
   $txt = $_POST['name'].','.$_POST['time'].','.$user_id.','.$_POST['canteen'].','.$name_modifiers;
 
-  if (!isset($_SESSION['user_id']) || ($old = checkForDBEntryOfSession($dateConfig['filename'])) == FALSE) {
+  if (!isset($login['user_id']) || ($old = checkForDBEntryOfUser($dateConfig['filename'], $login['user_id'])) == FALSE) {
     appendLine($dateConfig['filename'], $txt);
   } else {
     replaceLine($dateConfig['filename'], $old, $txt."\n");
@@ -67,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <nav class="navbar navbar-light bg-light justify-content-between" style="padding: 0">
       <span class="navbar-brand mb-0 h1" style="padding-left: 1rem"><?php echo $pageTitle; ?></span>
       <form class="form-inline">
-        <?php if (!isset($_SESSION['user_id'])) { ?>
+        <?php if ($login == FALSE) { ?>
           <a href="/oauth.php" class="btn btn-outline-success my-2 my-sm-0" style="margin-right: 1rem;margin-top: 10px !important">Login</a>
         <?php } else { ?>
           <button onclick='document.cookie.split(";").forEach(function(c) { document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); });location.reload()' class="btn btn-outline-success my-2 my-sm-0" style="margin-right: 1rem;margin-top: 10px !important">Logout</button>
@@ -89,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
        $readMyself = FALSE;
        foreach ($attendance as $data) {
          if (
-          isset($_SESSION['user_id']) && 
-          $data['user_id'] == $_SESSION['user_id']
+          isset($login['user_id']) && 
+          $data['user_id'] == $login['user_id']
          ) $readMyself = $data;
       ?>
       <tr>
@@ -112,7 +110,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
           } ?>
         </h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gib hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gib hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($login['name'])) echo $login['name']; ?>" /><br>
       <select class="form-control" name="time" <?php if (sizeof($times) <= 1) echo 'style="display:none"'; ?>>
       <?php foreach ($times as $time) {
           if (
@@ -145,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
        }
       ?>
       <?php
-        if (isset($_SESSION['username'])) {
+        if (isset($login['username'])) {
       ?>
         <div class="form-check">
           <input type="checkbox" name="verifiedName" checked class="form-check-input" id="verifiedNameCheck">

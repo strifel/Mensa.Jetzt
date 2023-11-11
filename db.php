@@ -31,10 +31,10 @@ function getCurrentDayConfiguration() {
   ];
 }
 
-function checkForDBEntryOfSession($filename) {
+function checkForDBEntryOfUser($filename, $user_id) {
   $fh = fopen($filename,'r');
   while ($line = fgets($fh)) {
-    if (str_replace("\n", "", explode(",", $line)[2]) == $_SESSION['user_id']) return $line;
+    if (str_replace("\n", "", explode(",", $line)[2]) == $user_id) return $line;
   }
   fclose($fh);
   return FALSE;
