@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
           } ?>
         </h5>
       <form method="POST">
-      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gebe hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
+      <input class="form-control" type="text" name="name" pattern="^[a-zA-Z0-9äöüß ]{1,20}$" placeholder="Gib hier deinen Namen ein" value="<?php if ($readMyself != FALSE) echo $readMyself["name"]; else if (isset($_COOKIE['save-name'])) echo $_COOKIE['save-name']; else if (isset($_SESSION['name'])) echo $_SESSION['name']; ?>" /><br>
       <select class="form-control" name="time" <?php if (sizeof($times) <= 1) echo 'style="display:none"'; ?>>
       <?php foreach ($times as $time) {
           if (
