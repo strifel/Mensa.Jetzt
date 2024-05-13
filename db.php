@@ -31,8 +31,15 @@ function getCurrentDayConfiguration() {
   ];
 }
 
+function openFile($filename, $mode) {
+	if (!file_exists($filename)) {
+		touch($filename);
+	}
+	return fopen($filename, $mode);
+}
+
 function checkForDBEntryOfUser($filename, $user_id) {
-  $fh = fopen($filename,'r');
+  $fh = openFile($filename,'r');
   while ($line = fgets($fh)) {
     if (str_replace("\n", "", explode(",", $line)[2]) == $user_id) return $line;
   }
@@ -47,7 +54,7 @@ function replaceLine($filename, $line1, $line2) {
 }
 
 function appendLine($filename, $line) {
-    $fh = fopen($filename, "a") or die("Unable to open database!");
+    $fh = openFile($filename, "a") or die("Unable to open database!");
 	fwrite($fh, $line."\n");
 	fclose($fh);
 }
@@ -57,7 +64,7 @@ function getAttendance($filename, $get_confidential=FALSE) {
 
   $attendance = [];
 
-  $fh = fopen($filename, 'r');
+  $fh = openFile($filename, 'r');
   while ($line = fgets($fh)) {
     $data = explode(",", str_replace("\n", "", $line));
 

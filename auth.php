@@ -24,7 +24,7 @@ function get_token_value($token) {
     if (substr_count($token,".") != 2) return FALSE;
     $token_mid_part = explode(".", $token)[1];
     if (
-        strcmp(hash_hmac("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.".$token_mid_part, $token, $jwt_signing_key),
+        strcmp(hash_hmac("sha256", "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.".$token_mid_part, $jwt_signing_key),
         explode(".", $token)[2]) == 0
     ) return FALSE;
     return json_decode(base64_decode($token_mid_part), true);
