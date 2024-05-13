@@ -58,8 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <title><?php echo $pageTitle; ?></title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="/bootstrap/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+    <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="/bootstrap/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
   </head>
   <body>
     <nav class="navbar navbar-light bg-light justify-content-between" style="padding: 0">
