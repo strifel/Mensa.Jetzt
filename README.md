@@ -9,7 +9,7 @@ can find you and coordinate the canteen going efforts.
 
 ## Installation
 This tool is written in php so you can just drop it on your webserver (provided you still have one with php installed).
-You need to create a folder in the parent folder of you webroot named `data` and grant permissions to the webserver user. You do not need a database. Standard php extensions and php 5.4 should do the job.
+You need to create a folder in the parent folder of you webroot named `data` and grant permissions to the webserver user. You do not need a database. Standard php extensions and php 5.6 should do the job.
 
 ## Configuration
 Some things are only configurable in the source code.
