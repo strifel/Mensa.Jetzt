@@ -18,5 +18,3 @@ echo(json_encode(array(
     "date" => $dateConfig['date'],
     "attendance" => $attendance
 )));
-
-fclose($fh);
