@@ -6,7 +6,12 @@ header("Access-Control-Allow-Methods: GET");
 
 $dateConfig = getCurrentDayConfiguration();
 
-$attendance = getAttendance('../../'.$dateConfig['filename']);
+// Handle relative paths correctly
+if (substr($dateConfig['filename'], 0, 1) != "/") {
+        $dateConfig['filename'] = "../../" . $dateConfig['filename'];
+}
+
+$attendance = getAttendance($dateConfig['filename']);
 
 echo(json_encode(array(
     "day" => $dateConfig['humanReadableDay'],
