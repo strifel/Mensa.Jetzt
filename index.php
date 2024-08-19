@@ -60,6 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
     <script src="/bootstrap/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script>
+        window.onblur = function() { window.onfocus = function () { location.reload(true) }};
+    </script>
   </head>
   <body>
     <nav class="navbar navbar-light bg-light justify-content-between" style="padding: 0">
