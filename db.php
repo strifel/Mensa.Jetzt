@@ -79,9 +79,24 @@ function getAttendance($filename, $get_confidential=FALSE) {
     if ($get_confidential) {
       $attendanceData["user_id"] = $data[2];
     }
-
     $attendance[] = $attendanceData;
   }
 
+  uasort($attendance, 'sortByDate');
   return $attendance;
+}
+
+function sortByDate($a1, $a2) {
+	global $times;
+
+	$ai1 = array_search($a1["time"], $times);
+	$ai2 = array_search($a2["time"], $times);
+
+	if ($ai1 == $ai2) {
+		return 0;
+	} else if ($ai1 < $ai2) {
+		return -1;
+	} else {
+		return 1;
+	}
 }
