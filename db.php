@@ -82,7 +82,7 @@ function getAttendance($filename, $get_confidential=FALSE) {
     $attendance[] = $attendanceData;
   }
 
-  uasort($attendance, 'sortByDate');
+  usort($attendance, 'sortByDate');
   return $attendance;
 }
 
