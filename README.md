@@ -51,6 +51,9 @@ if ($_SERVER['HTTP_HOST'] == "mensa.jetzt") {
     $lang_change_time_sentence = "Du bist %word doch wann anders in der Mensa (2)?";
 }
 
+$verified_colors = [];
+$verified_symbols = [];
+
 $oauth_request_url = "https://yourOauthDomain/oauth/authorize?client_id=".$oauth_client_id."&redirect_uri=".$oauth_redirect_url."&response_type=code&scope=openid+profile";
 ```
 ## WHY PHP???
