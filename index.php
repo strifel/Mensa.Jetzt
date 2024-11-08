@@ -160,4 +160,22 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </form></div></div>
   </div>
   </body>
+  <footer class="bg-body-tertiary text-center text-lg-start">
+  <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.05);">
+    © 2024 
+    <a class="text-body" href="https://github.com/strifel/mensa.jetzt">mensa.jetzt</a>
+    <?php
+    if (isset($impressum_url)) {
+    ?>
+    <a href="<?php echo($impressum_url); ?>" class="text-body">Impressum</a>
+    <?php
+    }
+    if (isset($datenschutz_url)) {
+    ?>
+    <a href="<?php echo($datenschutz_url); ?>" class="text-body">Datenschutz</a>
+    <?php
+    }
+    ?>
+  </div>
+</footer>
 </html>
